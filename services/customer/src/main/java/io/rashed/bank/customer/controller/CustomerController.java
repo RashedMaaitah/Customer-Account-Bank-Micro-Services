@@ -2,8 +2,8 @@ package io.rashed.bank.customer.controller;
 
 import io.rashed.bank.common.api.request.PageDTO;
 import io.rashed.bank.common.api.response.ApiResponse;
+import io.rashed.bank.common.api.response.CustomerResponse;
 import io.rashed.bank.customer.controller.dto.CreateCustomerRequest;
-import io.rashed.bank.customer.controller.dto.CustomerResponse;
 import io.rashed.bank.customer.controller.dto.UpdateCustomerRequest;
 import io.rashed.bank.customer.mapper.CustomerMapper;
 import io.rashed.bank.customer.repository.entity.Customer;

@@ -1,6 +1,7 @@
 package io.rashed.bank.customer.service;
 
 import io.rashed.bank.common.api.request.PageDTO;
+import io.rashed.bank.common.exception.EntityAlreadyExistsException;
 import io.rashed.bank.customer.controller.dto.CreateCustomerRequest;
 import io.rashed.bank.customer.controller.dto.UpdateCustomerRequest;
 import io.rashed.bank.customer.mapper.CustomerMapper;
@@ -34,6 +35,11 @@ public class CustomerService {
     }
 
     public Customer createCustomer(CreateCustomerRequest customerRequest) {
+        customerRepository.findByUsername(customerRequest.username())
+                .ifPresent((c) -> {
+                    throw new EntityAlreadyExistsException("username", customerRequest.username(), Customer.class);
+                });
+
         Customer customer = customerMapper.toCustomer(customerRequest);
         return customerRepository.save(customer);
     }

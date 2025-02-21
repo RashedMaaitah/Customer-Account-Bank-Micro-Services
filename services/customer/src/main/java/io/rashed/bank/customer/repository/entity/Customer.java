@@ -1,5 +1,6 @@
 package io.rashed.bank.customer.repository.entity;
 
+import io.rashed.bank.common.enums.customer.CustomerType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -45,9 +46,4 @@ public class Customer {
         return String.format("%07d", id);  // Pad with leading zeros to make 7 digits
     }
 
-    public enum CustomerType {
-        RETAIL,
-        CORPORATE,
-        INVESTMENT
-    }
 }

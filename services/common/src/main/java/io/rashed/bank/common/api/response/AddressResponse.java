@@ -1,4 +1,4 @@
-package io.rashed.bank.customer.controller.dto;
+package io.rashed.bank.common.api.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

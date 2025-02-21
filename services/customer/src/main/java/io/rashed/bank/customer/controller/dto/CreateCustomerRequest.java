@@ -1,6 +1,7 @@
 package io.rashed.bank.customer.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.rashed.bank.common.enums.customer.CustomerType;
 import io.rashed.bank.customer.repository.entity.Customer;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -16,7 +17,7 @@ public record CreateCustomerRequest(
 
         @JsonProperty
         @NotNull(message = "Customer must be assigned a type")
-        Customer.CustomerType type,
+        CustomerType type,
 
         @Valid
         @JsonProperty
