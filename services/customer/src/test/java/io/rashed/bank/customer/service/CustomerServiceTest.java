@@ -6,6 +6,8 @@ import io.rashed.bank.customer.controller.dto.CreateCustomerRequest;
 import io.rashed.bank.customer.controller.dto.UpdateCustomerRequest;
 import io.rashed.bank.customer.mapper.CustomerMapper;
 import io.rashed.bank.customer.repository.*;
+import io.rashed.bank.customer.repository.entity.Address;
+import io.rashed.bank.customer.repository.entity.Customer;
 import io.rashed.bank.exception.CustomerNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

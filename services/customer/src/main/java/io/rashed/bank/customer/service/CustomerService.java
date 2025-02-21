@@ -5,13 +5,14 @@ import io.rashed.bank.customer.controller.dto.CreateCustomerRequest;
 import io.rashed.bank.customer.controller.dto.UpdateCustomerRequest;
 import io.rashed.bank.customer.mapper.CustomerMapper;
 import io.rashed.bank.customer.repository.*;
+import io.rashed.bank.customer.repository.entity.Address;
+import io.rashed.bank.customer.repository.entity.Customer;
 import io.rashed.bank.exception.CustomerNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.nio.channels.FileChannel;
 import java.util.Objects;
 
 import static java.lang.String.format;

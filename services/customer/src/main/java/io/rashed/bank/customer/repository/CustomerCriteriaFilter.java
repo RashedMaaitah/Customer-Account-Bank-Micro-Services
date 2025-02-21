@@ -1,6 +1,8 @@
 package io.rashed.bank.customer.repository;
 
 import io.rashed.bank.common.repository.criteria.CriteriaFilter;
+import io.rashed.bank.customer.repository.entity.Address;
+import io.rashed.bank.customer.repository.entity.Customer;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;

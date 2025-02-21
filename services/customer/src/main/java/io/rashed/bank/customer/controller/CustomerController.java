@@ -6,7 +6,7 @@ import io.rashed.bank.customer.controller.dto.CreateCustomerRequest;
 import io.rashed.bank.customer.controller.dto.CustomerResponse;
 import io.rashed.bank.customer.controller.dto.UpdateCustomerRequest;
 import io.rashed.bank.customer.mapper.CustomerMapper;
-import io.rashed.bank.customer.repository.Customer;
+import io.rashed.bank.customer.repository.entity.Customer;
 import io.rashed.bank.customer.repository.CustomerSearchCriteria;
 import io.rashed.bank.customer.service.CustomerService;
 import jakarta.validation.Valid;

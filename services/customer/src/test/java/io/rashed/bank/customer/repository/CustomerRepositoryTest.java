@@ -1,5 +1,7 @@
 package io.rashed.bank.customer.repository;
 
+import io.rashed.bank.customer.repository.entity.Address;
+import io.rashed.bank.customer.repository.entity.Customer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

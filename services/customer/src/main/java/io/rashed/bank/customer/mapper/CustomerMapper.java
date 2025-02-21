@@ -2,7 +2,7 @@ package io.rashed.bank.customer.mapper;
 
 import io.rashed.bank.customer.controller.dto.CreateCustomerRequest;
 import io.rashed.bank.customer.controller.dto.CustomerResponse;
-import io.rashed.bank.customer.repository.Customer;
+import io.rashed.bank.customer.repository.entity.Customer;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
