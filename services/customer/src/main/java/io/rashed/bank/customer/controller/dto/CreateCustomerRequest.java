@@ -12,8 +12,8 @@ public record CreateCustomerRequest(
         @NotBlank(message = "legal_id is required")
         String legalId,
 
-        @NotBlank(message = "username is required")
-        @JsonProperty String username,
+//        @NotBlank(message = "username is required")
+//        @JsonProperty String username,
 
         @JsonProperty
         @NotNull(message = "Customer must be assigned a type")

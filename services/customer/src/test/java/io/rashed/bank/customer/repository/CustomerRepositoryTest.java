@@ -1,5 +1,6 @@
 package io.rashed.bank.customer.repository;
 
+import io.rashed.bank.common.enums.customer.CustomerType;
 import io.rashed.bank.customer.repository.entity.Address;
 import io.rashed.bank.customer.repository.entity.Customer;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +38,7 @@ class CustomerRepositoryTest {
         customer = Customer.builder()
                 .legalId("123456789")
                 .username("john_doe")
-                .type(Customer.CustomerType.RETAIL)
+                .type(CustomerType.RETAIL)
                 .address(address)
                 .build();
     }
@@ -51,7 +52,7 @@ class CustomerRepositoryTest {
         assertNotNull(savedCustomer.getId()); // Ensures ID is assigned after saving
         assertEquals("123456789", savedCustomer.getLegalId());
         assertEquals("john_doe", savedCustomer.getUsername());
-        assertEquals(Customer.CustomerType.RETAIL, savedCustomer.getType());
+        assertEquals(CustomerType.RETAIL, savedCustomer.getType());
         assertEquals("123 Main St", savedCustomer.getAddress().getStreet());
         assertEquals("Springfield", savedCustomer.getAddress().getCity());
         assertEquals("JO", savedCustomer.getAddress().getCountry());
@@ -90,20 +91,20 @@ class CustomerRepositoryTest {
     @Test
     void save_WithDifferentCustomerTypes_ShouldSaveSuccessfully() {
         // Act: Save a customer with a CORPORATE type
-        customer.setType(Customer.CustomerType.CORPORATE);
+        customer.setType(CustomerType.CORPORATE);
         Customer savedCustomerCorporate = customerRepository.save(customer);
 
         // Assert
         assertNotNull(savedCustomerCorporate.getId());
-        assertEquals(Customer.CustomerType.CORPORATE, savedCustomerCorporate.getType());
+        assertEquals(CustomerType.CORPORATE, savedCustomerCorporate.getType());
 
         // Act: Save a customer with an INVESTMENT type
-        customer.setType(Customer.CustomerType.INVESTMENT);
+        customer.setType(CustomerType.INVESTMENT);
         Customer savedCustomerInvestment = customerRepository.save(customer);
 
         // Assert
         assertNotNull(savedCustomerInvestment.getId());
-        assertEquals(Customer.CustomerType.INVESTMENT, savedCustomerInvestment.getType());
+        assertEquals(CustomerType.INVESTMENT, savedCustomerInvestment.getType());
     }
 
     // You can add more tests here based on your requirements

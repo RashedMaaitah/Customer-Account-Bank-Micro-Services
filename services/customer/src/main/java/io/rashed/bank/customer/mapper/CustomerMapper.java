@@ -12,11 +12,11 @@ public interface CustomerMapper {
     CustomerMapper INSTANCE = Mappers.getMapper(CustomerMapper.class);
 
     @Mapping(source = "legalId", target = "legalId")
-    @Mapping(source = "username", target = "username")
     @Mapping(source = "type", target = "type")
     @Mapping(source = "address", target = "address")
     Customer toCustomer(CreateCustomerRequest customerRequest);
 
+    @Mapping(source = "id", target = "id")
     @Mapping(source = "legalId", target = "legalId")
     @Mapping(source = "username", target = "username")
     @Mapping(source = "type", target = "type")

@@ -6,6 +6,8 @@ import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.domain.*;
 
+import java.util.Objects;
+
 /**
  * A generic repository for handling dynamic filtering, sorting, and pagination using JPA Criteria API.
  *
@@ -118,8 +120,11 @@ public abstract class CriteriaRepository<T, S> {
      * @return A Pageable instance with sorting applied.
      */
     private Pageable getPageable(PageDTO pageDTO) {
-        Sort sort = Sort.by(pageDTO.getSortDirection(), pageDTO.getSortBy());
-        return PageRequest.of(pageDTO.getPage(), pageDTO.getPageSize(), sort);
+        if (Objects.nonNull(pageDTO.getSortBy())) {
+            Sort sort = Sort.by(pageDTO.getSortDirection(), pageDTO.getSortBy());
+            return PageRequest.of(pageDTO.getPage(), pageDTO.getPageSize(), sort);
+        }
+        return PageRequest.of(pageDTO.getPage(), pageDTO.getPageSize());
     }
 
     /**

@@ -1,9 +1,10 @@
 package io.rashed.bank.customer.mapper;
 
+import io.rashed.bank.common.api.response.AddressResponse;
+import io.rashed.bank.common.api.response.CustomerResponse;
+import io.rashed.bank.common.enums.customer.CustomerType;
 import io.rashed.bank.customer.controller.dto.AddressRequest;
-import io.rashed.bank.customer.controller.dto.AddressResponse;
 import io.rashed.bank.customer.controller.dto.CreateCustomerRequest;
-import io.rashed.bank.customer.controller.dto.CustomerResponse;
 import io.rashed.bank.customer.repository.entity.Address;
 import io.rashed.bank.customer.repository.entity.Customer;
 import org.junit.jupiter.api.Test;
@@ -40,8 +41,8 @@ public class CustomerMapperTest {
         // Arrange
         CreateCustomerRequest request = new CreateCustomerRequest(
                 "123456789",
-                "john_doe",
-                Customer.CustomerType.RETAIL,
+//                "john_doe",
+                CustomerType.RETAIL,
                 null // Address is null
         );
 
@@ -51,8 +52,8 @@ public class CustomerMapperTest {
         // Assert
         assertThat(customer).isNotNull();
         assertThat(customer.getLegalId()).isEqualTo("123456789");
-        assertThat(customer.getUsername()).isEqualTo("john_doe");
-        assertThat(customer.getType()).isEqualTo(Customer.CustomerType.RETAIL);
+//        assertThat(customer.getUsername()).isEqualTo("john_doe");
+        assertThat(customer.getType()).isEqualTo(CustomerType.RETAIL);
         assertThat(customer.getAddress()).isNull();
     }
 
@@ -71,7 +72,7 @@ public class CustomerMapperTest {
         Customer customer = new Customer();
         customer.setLegalId("987654321");
         customer.setUsername("jane_doe");
-        customer.setType(Customer.CustomerType.RETAIL);
+        customer.setType(CustomerType.RETAIL);
         customer.setAddress(null); // Address is null
 
         // Act
@@ -81,7 +82,7 @@ public class CustomerMapperTest {
         assertThat(response).isNotNull();
         assertThat(response.legalId()).isEqualTo("987654321");
         assertThat(response.username()).isEqualTo("jane_doe");
-        assertThat(response.type()).isEqualTo(Customer.CustomerType.RETAIL);
+        assertThat(response.type()).isEqualTo(CustomerType.RETAIL);
         assertThat(response.addressResponse()).isNull();
     }
 
@@ -105,8 +106,8 @@ public class CustomerMapperTest {
 
         CreateCustomerRequest request = new CreateCustomerRequest(
                 "123456789",
-                "john_doe",
-                Customer.CustomerType.RETAIL,
+//                "john_doe",
+                CustomerType.RETAIL,
                 addressRequest
         );
 
@@ -116,8 +117,8 @@ public class CustomerMapperTest {
         // Assert
         assertThat(customer).isNotNull();
         assertThat(customer.getLegalId()).isEqualTo("123456789");
-        assertThat(customer.getUsername()).isEqualTo("john_doe");
-        assertThat(customer.getType()).isEqualTo(Customer.CustomerType.RETAIL);
+//        assertThat(customer.getUsername()).isEqualTo("john_doe");
+        assertThat(customer.getType()).isEqualTo(CustomerType.RETAIL);
 
         // Validate Address Mapping
         assertThat(customer.getAddress()).isNotNull();
@@ -148,7 +149,7 @@ public class CustomerMapperTest {
         Customer customer = new Customer();
         customer.setLegalId("987654321");
         customer.setUsername("jane_doe");
-        customer.setType(Customer.CustomerType.RETAIL);
+        customer.setType(CustomerType.RETAIL);
         customer.setAddress(address);
 
         // Act
@@ -158,7 +159,7 @@ public class CustomerMapperTest {
         assertThat(response).isNotNull();
         assertThat(response.legalId()).isEqualTo("987654321");
         assertThat(response.username()).isEqualTo("jane_doe");
-        assertThat(response.type()).isEqualTo(Customer.CustomerType.RETAIL);
+        assertThat(response.type()).isEqualTo(CustomerType.RETAIL);
 
         // Validate Address Response Mapping
         assertThat(response.addressResponse()).isNotNull();

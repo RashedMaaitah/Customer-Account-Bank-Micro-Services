@@ -15,9 +15,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/v1/customers")
@@ -27,17 +31,18 @@ public class CustomerController {
     private final CustomerService customerService;
     private final CustomerMapper customerMapper;
 
+    @PreAuthorize("hasAnyRole('client_admin')")
     @GetMapping
     public ResponseEntity<ApiResponse<Page<CustomerResponse>>> getCustomersWithFiltersAndSorting(
             PageDTO pageDTO,
             CustomerSearchCriteria searchCriteria
     ) {
-        Page<CustomerResponse> productDTOPage =
+        Page<CustomerResponse> customersPageDto =
                 customerService.getCustomers(pageDTO, searchCriteria)
                         .map(customerMapper::toCustomerResponse);
 
         return ResponseEntity.ok(
-                ApiResponse.success(List.of(productDTOPage), "Fetched products"));
+                ApiResponse.success(List.of(customersPageDto), "Fetched customers"));
     }
 
 
@@ -45,15 +50,17 @@ public class CustomerController {
     public ResponseEntity<ApiResponse<CustomerResponse>> createCustomer(
             @RequestBody @Valid CreateCustomerRequest customerRequest
     ) {
+        String username = getSecurityContextUsername();
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(
                                 List.of(customerMapper.toCustomerResponse(
-                                        customerService.createCustomer(customerRequest))),
+                                        customerService.createCustomer(customerRequest, username))),
                                 "Customer Created Successfully"
                         )
                 );
     }
 
+    @PreAuthorize("hasAnyRole('client_admin')")
     @GetMapping("{id}")
     public ResponseEntity<ApiResponse<CustomerResponse>> getCustomer(
             @PathVariable @NotNull Long id
@@ -67,6 +74,7 @@ public class CustomerController {
         );
     }
 
+    @PreAuthorize("hasAnyRole('client_admin')")
     @PutMapping("{id}")
     public ResponseEntity<Void> updateCustomer(
             @PathVariable @NotNull Long id,
@@ -74,6 +82,37 @@ public class CustomerController {
     ) {
         customerService.updateCustomer(id, customerRequest);
         return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasAnyRole('client_admin')")
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteCustomer(
+            @PathVariable @NotNull Long id
+    ) {
+        customerService.deleteCustomer(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<CustomerResponse>> getAuthenticatedCustomer() {
+        String username = getSecurityContextUsername();
+        Customer customer = customerService.getCustomer(username);
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        List.of(customerMapper.toCustomerResponse(customer)),
+                        "Customer Retrieved Successfully"
+                )
+        );
+    }
+
+
+    private String getSecurityContextUsername() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (Objects.isNull(username)) {
+            throw new AccessDeniedException("Access denied");
+        }
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }
 

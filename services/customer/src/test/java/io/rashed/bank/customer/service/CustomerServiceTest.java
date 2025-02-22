@@ -1,6 +1,7 @@
 package io.rashed.bank.customer.service;
 
 import io.rashed.bank.common.api.request.PageDTO;
+import io.rashed.bank.common.enums.customer.CustomerType;
 import io.rashed.bank.customer.controller.dto.AddressRequest;
 import io.rashed.bank.customer.controller.dto.CreateCustomerRequest;
 import io.rashed.bank.customer.controller.dto.UpdateCustomerRequest;
@@ -43,19 +44,20 @@ public class CustomerServiceTest {
     private CreateCustomerRequest createCustomerRequest;
     private Customer customer;
     List<Customer> customers;
+    private String username;
 
     @BeforeEach
     public void setUp() {
+        username = "test-user";
         createCustomerRequest = new CreateCustomerRequest(
                 "123",
-                "test-user",
-                Customer.CustomerType.RETAIL,
+                CustomerType.RETAIL,
                 new AddressRequest("Jordan", "Amman", "street", "110011")
         );
         customer = Customer.builder()
                 .id(1L)
                 .legalId("123")
-                .type(Customer.CustomerType.RETAIL)
+                .type(CustomerType.RETAIL)
                 .username("test-user")
                 .address(new Address(1L, "Jordan", "Amman", "street", "110011"))
                 .build();
@@ -70,7 +72,7 @@ public class CustomerServiceTest {
         when(customerRepository.save(customer)).thenReturn(customer);
 
 
-        Customer result = customerService.createCustomer(createCustomerRequest);
+        Customer result = customerService.createCustomer(createCustomerRequest, username);
 
         verify(customerMapper, times(1)).toCustomer(createCustomerRequest);
         verify(customerRepository, times(1)).save(customer);
@@ -95,7 +97,7 @@ public class CustomerServiceTest {
         when(customerRepository.findById(id)).thenReturn(Optional.of(customer));
 
         UpdateCustomerRequest request =
-                new UpdateCustomerRequest("123", Customer.CustomerType.CORPORATE, new AddressRequest(
+                new UpdateCustomerRequest("123", CustomerType.CORPORATE, new AddressRequest(
                         "New Country", "New City", "street", "new zip code"
                 ));
 
@@ -157,7 +159,7 @@ public class CustomerServiceTest {
     @Test
     public void updateCustomer_WithNonExistentCustomerId_ShouldThrowCustomerNotFoundException() {
         Long id = 99L;
-        UpdateCustomerRequest request = new UpdateCustomerRequest("999", Customer.CustomerType.CORPORATE,
+        UpdateCustomerRequest request = new UpdateCustomerRequest("999", CustomerType.CORPORATE,
                 new AddressRequest("New Country", "New City", "New Street", "999999"));
 
         when(customerRepository.findById(id)).thenReturn(Optional.empty());
@@ -168,7 +170,7 @@ public class CustomerServiceTest {
     @Test
     public void getCustomers_WithInvalidSearchCriteria_ShouldThrowIllegalArgumentException() {
         PageDTO pageDTO = new PageDTO(0, 10, Sort.Direction.ASC, "id");
-        CustomerSearchCriteria invalidSearchCriteria = new CustomerSearchCriteria("Invalid", "NonExistent", Customer.CustomerType.RETAIL, null);
+        CustomerSearchCriteria invalidSearchCriteria = new CustomerSearchCriteria("Invalid", "NonExistent", CustomerType.RETAIL, null);
 
         when(customerCriteriaRepository.findAllWithFilters(pageDTO, invalidSearchCriteria))
                 .thenThrow(new IllegalArgumentException("Invalid search criteria"));
@@ -181,7 +183,7 @@ public class CustomerServiceTest {
                 Customer.builder()
                         .id(1L)
                         .legalId("12345")
-                        .type(Customer.CustomerType.RETAIL)
+                        .type(CustomerType.RETAIL)
                         .username("john.doe")
                         .address(new Address(1L, "Jordan", "Amman", "Main Street", "110011"))
                         .build(),
@@ -189,7 +191,7 @@ public class CustomerServiceTest {
                 Customer.builder()
                         .id(2L)
                         .legalId("67890")
-                        .type(Customer.CustomerType.RETAIL)
+                        .type(CustomerType.RETAIL)
                         .username("jane.smith")
                         .address(new Address(2L, "Jordan", "Irbid", "Queen Noor St", "211000"))
                         .build(),
@@ -197,7 +199,7 @@ public class CustomerServiceTest {
                 Customer.builder()
                         .id(3L)
                         .legalId("11223")
-                        .type(Customer.CustomerType.CORPORATE)
+                        .type(CustomerType.CORPORATE)
                         .username("alice.johnson")
                         .address(new Address(3L, "Jordan", "Zarqa", "Industrial Zone", "331200"))
                         .build(),
@@ -205,7 +207,7 @@ public class CustomerServiceTest {
                 Customer.builder()
                         .id(4L)
                         .legalId("44556")
-                        .type(Customer.CustomerType.CORPORATE)
+                        .type(CustomerType.CORPORATE)
                         .username("bob.martin")
                         .address(new Address(4L, "Jordan", "Aqaba", "Beach Road", "431300"))
                         .build(),
@@ -213,7 +215,7 @@ public class CustomerServiceTest {
                 Customer.builder()
                         .id(5L)
                         .legalId("78901")
-                        .type(Customer.CustomerType.INVESTMENT)
+                        .type(CustomerType.INVESTMENT)
                         .username("emily.white")
                         .address(new Address(5L, "Jordan", "Amman", "King Hussein St", "120100"))
                         .build()

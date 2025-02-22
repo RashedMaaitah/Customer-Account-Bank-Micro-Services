@@ -9,10 +9,13 @@ import io.rashed.bank.customer.repository.*;
 import io.rashed.bank.customer.repository.entity.Address;
 import io.rashed.bank.customer.repository.entity.Customer;
 import io.rashed.bank.exception.CustomerNotFoundException;
+import io.rashed.bank.producer.RabbitMQProducer;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
@@ -22,8 +25,8 @@ import static java.lang.String.format;
 @RequiredArgsConstructor
 public class CustomerService {
 
+    private final RabbitMQProducer rabbitMQProducer;
     private final CustomerRepository customerRepository;
-
     private final CustomerMapper customerMapper;
     private final CustomerCriteriaRepository customerCriteriaRepository;
 
@@ -34,16 +37,28 @@ public class CustomerService {
                 ));
     }
 
-    public Customer createCustomer(CreateCustomerRequest customerRequest) {
-        customerRepository.findByUsername(customerRequest.username())
+    public Customer getCustomer(String username) {
+        return customerRepository.findByUsername(username)
+                .orElseThrow(() -> new CustomerNotFoundException(
+                        format("Customer with username = %s doesn't exist", username)
+                ));
+    }
+
+    @Transactional
+    public Customer createCustomer(CreateCustomerRequest customerRequest, String username) {
+        customerRepository.findByUsername(username)
                 .ifPresent((c) -> {
-                    throw new EntityAlreadyExistsException("username", customerRequest.username(), Customer.class);
+                    throw new EntityAlreadyExistsException("username", username, Customer.class);
                 });
 
         Customer customer = customerMapper.toCustomer(customerRequest);
-        return customerRepository.save(customer);
+        customer.setUsername(username);
+        Customer saved = customerRepository.save(customer);
+        saved.setId(null);
+        return saved;
     }
 
+    @Transactional
     public void updateCustomer(Long id, UpdateCustomerRequest customerRequest) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new CustomerNotFoundException(
@@ -55,6 +70,12 @@ public class CustomerService {
 
     public Page<Customer> getCustomers(PageDTO pageDTO, CustomerSearchCriteria searchCriteria) {
         return customerCriteriaRepository.findAllWithFilters(pageDTO, searchCriteria);
+    }
+
+    @Transactional
+    public void deleteCustomer(@NotNull Long id) {
+        rabbitMQProducer.sendDeleteCustomerAccounts(id);
+        customerRepository.deleteById(id);
     }
 
     private void mergeCustomer(Customer customer, UpdateCustomerRequest request) {

@@ -1,7 +1,7 @@
 package io.rashed.bank.customer.mapper;
 
+import io.rashed.bank.common.api.response.AddressResponse;
 import io.rashed.bank.customer.controller.dto.AddressRequest;
-import io.rashed.bank.customer.controller.dto.AddressResponse;
 import io.rashed.bank.customer.repository.entity.Address;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -49,7 +49,7 @@ services:
     image: quay.io/keycloak/keycloak:latest
     container_name: keycloak
     restart: always
-    command: ["start-dev"]
+    command: [ "start-dev" ]
     environment:
       KC_DB: mysql
       KC_DB_URL: jdbc:mysql://mysql_keycloak:3306/keycloak_db
@@ -61,6 +61,18 @@ services:
       - "8080:8080"
     depends_on:
       - mysql_keycloak
+    networks:
+      - bank_custom_network
+
+  rabbitmq:
+    image: rabbitmq:management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
     networks:
       - bank_custom_network
 

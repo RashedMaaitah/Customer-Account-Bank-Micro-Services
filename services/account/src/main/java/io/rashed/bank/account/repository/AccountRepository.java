@@ -2,7 +2,6 @@ package io.rashed.bank.account.repository;
 
 import io.rashed.bank.account.repository.entity.Account;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -19,5 +18,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Optional<Account> findByAccountId(String accountId);
 
-    void deleteByAccountId(String accountId);
+    void deleteAccountByAccountId(String accountId);
+
+    void deleteByCustomerId(Long customerId);
 }

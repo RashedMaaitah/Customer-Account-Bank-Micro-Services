@@ -1,9 +1,8 @@
 package io.rashed.bank.account.service;
 
-import com.netflix.appinfo.ApplicationInfoManager;
-import io.rashed.bank.account.controller.dto.AccountResponse;
 import io.rashed.bank.account.controller.dto.CreateAccountRequest;
 import io.rashed.bank.account.controller.dto.UpdateAccountRequest;
+import io.rashed.bank.account.controller.dto.UpdateAccountStatusRequest;
 import io.rashed.bank.account.factory.AccountFactory;
 import io.rashed.bank.account.repository.AccountCriteriaRepository;
 import io.rashed.bank.account.repository.AccountRepository;
@@ -16,18 +15,12 @@ import io.rashed.bank.common.exception.customer.CustomerNotFoundException;
 import io.rashed.bank.customer.CustomerClient;
 import io.rashed.bank.exception.AccountLimitExceededException;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cloud.client.loadbalancer.ServiceInstanceChooser;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -65,18 +58,20 @@ public class AccountService {
     }
 
     @Transactional
-    public void updateAccountStatus(String accountId, Account.AccountStatus status) {
+    public void updateAccountStatus(String accountId, UpdateAccountStatusRequest request) {
         Account account = accountRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new EntityNotFoundException("Invalid AccountId"));
 
-        account.setStatus(status);
+        account.setStatus(request.status());
         accountRepository.save(account);
     }
 
+    @Transactional
     public void deleteAccount(String accountId) {
-        accountRepository.deleteByAccountId(accountId);
+        accountRepository.deleteAccountByAccountId(accountId);
     }
 
+    @Transactional
     public Account updateAccount(String accountId, UpdateAccountRequest updateRequest) {
         Account account = accountRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new EntityNotFoundException("Invalid AccountId"));
@@ -91,6 +86,10 @@ public class AccountService {
         return accountRepository.save(account);
     }
 
+    @Transactional
+    public void deleteCustomerAccounts(Long customerId) {
+        accountRepository.deleteByCustomerId(customerId);
+    }
 
     private CustomerResponse getCustomerById(Long customerId) {
         ApiResponse<CustomerResponse> customerApiResponse = customerClient.findCustomerById(customerId.toString());

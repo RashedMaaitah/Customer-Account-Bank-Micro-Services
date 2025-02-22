@@ -3,6 +3,7 @@ package io.rashed.bank.account.controller;
 import io.rashed.bank.account.controller.dto.AccountResponse;
 import io.rashed.bank.account.controller.dto.CreateAccountRequest;
 import io.rashed.bank.account.controller.dto.UpdateAccountRequest;
+import io.rashed.bank.account.controller.dto.UpdateAccountStatusRequest;
 import io.rashed.bank.account.mapper.AccountMapper;
 import io.rashed.bank.account.repository.AccountSearchCriteria;
 import io.rashed.bank.account.repository.entity.Account;
@@ -12,21 +13,25 @@ import io.rashed.bank.common.api.response.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import jakarta.ws.rs.QueryParam;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.NotImplementedException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/v1/accounts")
 @RequiredArgsConstructor
 public class AccountController {
 
-    // TODO Create REST endpoints for Account
     private final AccountService accountService;
     private final AccountMapper accountMapper;
 
@@ -63,9 +68,9 @@ public class AccountController {
             String accountId,
             @RequestBody
             @NotNull
-            Account.AccountStatus status
+            UpdateAccountStatusRequest updateAccountStatusRequest
     ) {
-        accountService.updateAccountStatus(accountId, status);
+        accountService.updateAccountStatus(accountId, updateAccountStatusRequest);
         return ResponseEntity.noContent().build();
     }
 
@@ -110,4 +115,23 @@ public class AccountController {
         );
     }
 
+    
+    @PreAuthorize("hasAnyRole('client_admin')")
+    @DeleteMapping
+    public ResponseEntity<Void> deleteCustomerAccounts(
+            @QueryParam("customerId")
+            @NotNull(message = "customer-id can't be null")
+            Long customerId
+    ) {
+        accountService.deleteCustomerAccounts(customerId);
+        return ResponseEntity.noContent().build();
+    }
+
+    private String getSecurityContextUsername() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (Objects.isNull(username)) {
+            throw new AccessDeniedException("Access denied");
+        }
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
 }

@@ -4,12 +4,16 @@ import io.rashed.bank.common.api.response.ApiResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
+import javax.naming.AuthenticationException;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,6 +65,20 @@ public class ExceptionHandlerBase {
     }
 
 
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ApiResponse<String>> handleAuthorizationDeniedException(
+            AuthorizationDeniedException ex) {
+        log.error("Access denied error: \n", ex);
+
+        return ResponseEntity
+                .status(FORBIDDEN)
+                .body(
+                        ApiResponse.error("Access denied.",
+                                List.of(ex.getMessage()),
+                                FORBIDDEN.value()));
+    }
+
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<String>> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException ex) {
@@ -79,6 +97,23 @@ public class ExceptionHandlerBase {
                                 BAD_REQUEST.value()));
     }
 
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<ApiResponse<String>> handleHandlerMethodValidationException(
+            HandlerMethodValidationException ex) {
+        log.error("Handler Method Validation Exception \n", ex);
+
+        List<String> errors = ex.getAllErrors()
+                .stream()
+                .map(MessageSourceResolvable::getDefaultMessage)
+                .collect(Collectors.toList());
+
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(
+                        ApiResponse.error("Validation errors occurred",
+                                errors,
+                                BAD_REQUEST.value()));
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<String>> handleGeneralException(
