@@ -1,7 +1,11 @@
-
 # CustomerAccount Bank Microservices
 
 This is a project in favor of a task required for Warba Bank, it is about two Microservices Account and Customer that are co-dependant
+
+![Logo](https://i.ibb.co/qL8PGgPd/diagram-export-2-25-2025-5-28-07-PM.png)
+
+
+
 
 
 ## Authors
@@ -15,6 +19,7 @@ This is a project in favor of a task required for Warba Bank, it is about two Mi
 - Keycloak for authentication and authorization
 - RabbitMQ for event-driven communication between the 2 services
 - API Gateway for centralized access to the services
+- JaCoCo for test coverage
 - Docker
 
 
@@ -31,7 +36,7 @@ Start the docker containers using the docker compose file
   docker compose up -d
 ```
 
-RabbitMQ 
+RabbitMQ
 - Navigate to using localhost:15672
 - Sign in using "guest" for both username and password
 - Create a queue called customer.deleted.queue
@@ -43,10 +48,10 @@ Keycloak
 ## Run Locally
 
 Using maven run the services as follows:
-- Eurka discovery 
+- Eureka discovery
 - Customer service
 - Account service
-- Gateway 
+- Gateway
 
 
 ## Obstacles Faced
@@ -65,4 +70,4 @@ Due to time constraints, there were several planned enhancements I could not com
 - Writing additional tests to ensure full coverage.
 - Adding more comprehensive documentation.
 - Integrating OpenAPI or Swagger for API documentation.
-Despite these challenges, the project succeeded in meeting the core requirements, and the lessons learned will aid in improving future work on similar systems.
+  Despite these challenges, the project succeeded in meeting the core requirements, and the lessons learned will aid in improving future work on similar systems.
